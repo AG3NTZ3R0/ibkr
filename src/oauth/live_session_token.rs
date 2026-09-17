@@ -67,7 +67,7 @@ pub fn mint(
     let status = http_resp.status();
     let text = http_resp.text()?;
     if !status.is_success() {
-        return Err(Error::Auth(format!("live_session_token {status}: {text}")));
+        return Err(Error::Api { status: status.as_u16(), body: text });
     }
     let resp: Response = serde_json::from_str(&text)?;
 

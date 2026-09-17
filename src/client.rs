@@ -68,7 +68,12 @@ impl Client {
             None if E::METHOD == reqwest::Method::POST => req = req.body(""),
             None => {}
         }
-        Ok(req.send()?.error_for_status()?.json()?)
+        let resp = req.send()?;
+        let status = resp.status();
+        if !status.is_success() {
+            return Err(Error::Api { status: status.as_u16(), body: resp.text()? });
+        }
+        Ok(resp.json()?)
     }
 
     /// Open the brokerage session (`compete`/`publish` both true). OAuth mode only.
