@@ -73,7 +73,8 @@ impl Client {
         if !status.is_success() {
             return Err(Error::Api { status: status.as_u16(), body: resp.text()? });
         }
-        Ok(resp.json()?)
+        let body = resp.text()?;
+        serde_json::from_str(&body).map_err(|source| Error::Decode { source, body })
     }
 
     /// Open the brokerage session (`compete`/`publish` both true). OAuth mode only.

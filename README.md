@@ -16,6 +16,17 @@ Two transports, one `Client`:
 | Requires | Client Portal Gateway running | registered consumer key |
 | Suits | development | headless / unattended |
 
+## Errors
+
+A transparent layer: every IBKR response that is not the expected result comes back verbatim.
+
+| `Error` | When | Carries |
+| --- | --- | --- |
+| `Api` | non-2xx response | `status`, `body` |
+| `Decode` | 2xx response that did not parse | `source`, `body` |
+| `Http` | no response arrived | reqwest's error |
+| `Auth` | local credential, signing, or token failure | message |
+
 ## Local gateway
 
 Start the gateway and log in at <https://localhost:5000>:

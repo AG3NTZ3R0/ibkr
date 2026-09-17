@@ -26,7 +26,8 @@ pub struct Credentials {
 
 impl Credentials {
     pub fn from_json(s: &str) -> Result<Self, Error> {
-        Ok(serde_json::from_str(s)?)
+        // Auth, not Decode: the payload holds private keys, so it is never echoed.
+        serde_json::from_str(s).map_err(|e| Error::Auth(format!("credentials: {e}")))
     }
 }
 
