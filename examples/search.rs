@@ -31,9 +31,7 @@ fn main() {
             sec_type: Some(search::SecType::Stk),
         }) {
             Ok(hits) => break hits,
-            Err(ibkr::Error::Http(e))
-                if e.status() == Some(reqwest::StatusCode::SERVICE_UNAVAILABLE) && attempt < 5 =>
-            {
+            Err(ibkr::Error::Api { status: 503, .. }) if attempt < 5 => {
                 std::thread::sleep(std::time::Duration::from_secs(2));
             }
             Err(e) => panic!("secdef search: {e}"),

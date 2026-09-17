@@ -67,9 +67,10 @@ pub fn mint(
     let status = http_resp.status();
     let text = http_resp.text()?;
     if !status.is_success() {
-        return Err(Error::Auth(format!("live_session_token {status}: {text}")));
+        return Err(Error::Api { status: status.as_u16(), body: text });
     }
-    let resp: Response = serde_json::from_str(&text)?;
+    let resp: Response =
+        serde_json::from_str(&text).map_err(|source| Error::Decode { source, body: text })?;
 
     // K = B^a mod p; LST = HMAC_SHA1(K_bytes, secret_bytes).
     let b = BigUint::parse_bytes(resp.diffie_hellman_response.as_bytes(), 16)
