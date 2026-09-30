@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# Fails when a step's output is missing (exit 2) or still needs a human
+# (exit 1): NEEDS CLARIFICATION markers, which a headless agent leaves behind
+# instead of asking, unchecked boxes in the spec's quality checklist, or tasks
+# implement left unfinished.
+set -uo pipefail
+
+. .specify/scripts/bash/common.sh
+eval "$(get_feature_paths --no-persist)" || exit 2
+
+checklist="$FEATURE_DIR/checklists/requirements.md"
+status=0
+
+require() {
+	[ -f "$1" ] || { echo "not found: $1" >&2; exit 2; }
+}
+
+markers() {
+	if grep -Hn 'NEEDS CLARIFICATION' "$@"; then
+		echo "unresolved clarifications" >&2
+		status=1
+	fi
+}
+
+unchecked() {
+	if grep -Hn -- '- \[ \]' "$1"; then
+		echo "unchecked items" >&2
+		status=1
+	fi
+}
+
+case "${1:-}" in
+spec)
+	require "$FEATURE_SPEC"
+	require "$checklist"
+	markers "$FEATURE_SPEC"
+	unchecked "$checklist"
+	;;
+plan)
+	require "$IMPL_PLAN"
+	files=("$IMPL_PLAN")
+	[ -f "$RESEARCH" ] && files+=("$RESEARCH")
+	markers "${files[@]}"
+	;;
+tasks)
+	require "$TASKS"
+	;;
+implement)
+	require "$TASKS"
+	unchecked "$TASKS"
+	;;
+*)
+	echo "usage: check spec|plan|tasks|implement" >&2
+	exit 2
+	;;
+esac
+
+exit "$status"

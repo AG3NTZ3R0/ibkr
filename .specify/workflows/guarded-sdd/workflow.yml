@@ -1,0 +1,62 @@
+schema_version: "1.0"
+workflow:
+  id: "guarded-sdd"
+  name: "Guarded SDD Cycle"
+  version: "0.1.0"
+  author: "AG3NTZ3R0"
+  description: "Runs specify → plan → tasks → implement, stopping after any step that leaves work for a human"
+
+requires:
+  speckit_version: ">=1.0.13"
+
+inputs:
+  spec:
+    type: string
+    required: true
+  integration:
+    type: string
+    default: "auto"
+
+# A headless agent cannot ask its questions, so it leaves NEEDS CLARIFICATION
+# markers behind and exits 0. Each check fails the run when markers remain;
+# resolve them, then `specify workflow resume <run_id>` reruns the check.
+steps:
+  - id: speckit-specify
+    command: speckit.specify
+    integration: "{{ inputs.integration }}"
+    input:
+      args: "{{ inputs.spec }}"
+
+  - id: check-speckit-specify
+    type: shell
+    run: bash "$SPECKIT_WORKFLOW_DIR/check" spec
+
+  - id: speckit-plan
+    command: speckit.plan
+    integration: "{{ inputs.integration }}"
+    input:
+      args: "{{ inputs.spec }}"
+
+  - id: check-speckit-plan
+    type: shell
+    run: bash "$SPECKIT_WORKFLOW_DIR/check" plan
+
+  - id: speckit-tasks
+    command: speckit.tasks
+    integration: "{{ inputs.integration }}"
+    input:
+      args: "{{ inputs.spec }}"
+
+  - id: check-speckit-tasks
+    type: shell
+    run: bash "$SPECKIT_WORKFLOW_DIR/check" tasks
+
+  - id: speckit-implement
+    command: speckit.implement
+    integration: "{{ inputs.integration }}"
+    input:
+      args: "{{ inputs.spec }}"
+
+  - id: check-speckit-implement
+    type: shell
+    run: bash "$SPECKIT_WORKFLOW_DIR/check" implement
