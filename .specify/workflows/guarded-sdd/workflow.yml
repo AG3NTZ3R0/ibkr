@@ -17,6 +17,10 @@ inputs:
     type: string
     default: "auto"
 
+# Requires "permissions": {"defaultMode": "auto"} in ~/.claude/settings.json.
+# Spec Kit runs `claude -p` with no permission mode, and a headless session in
+# the default mode is denied every tool call that needs approval.
+#
 # A headless agent cannot ask its questions, so it leaves NEEDS CLARIFICATION
 # markers behind and exits 0. Each check fails the run when markers remain;
 # resolve them, then `specify workflow resume <run_id>` reruns the check.

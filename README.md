@@ -4,7 +4,7 @@ Typed Rust client for the [Interactive Brokers Client Portal Web API](https://ww
 
 ```toml
 [dependencies]
-ibkr = "0.6"
+ibkr = "0.7"
 ```
 
 Two transports, one `Client`:
@@ -15,6 +15,10 @@ Two transports, one `Client`:
 | Auth | browser login, repeated daily | live session token, valid ~24h |
 | Requires | Client Portal Gateway running | registered consumer key |
 | Suits | development | headless / unattended |
+
+Each endpoint is wrapped in full: every request parameter and response field in IBKR's
+[Web API reference](https://www.interactivebrokers.com/docs/web-api/api-reference), and each
+module links its reference page.
 
 ## Errors
 
@@ -43,6 +47,11 @@ let hits = client.send(search::Request {
     symbol: "AAPL".into(),
     name: None,
     sec_type: None,
+    more: None,
+    fund: None,
+    fund_family_conid_ex: None,
+    pattern: None,
+    referrer: None,
 })?;
 ```
 

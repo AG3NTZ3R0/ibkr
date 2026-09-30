@@ -15,8 +15,13 @@ require() {
 	[ -f "$1" ] || { echo "not found: $1" >&2; exit 2; }
 }
 
+# Matches the two marker forms Spec Kit's templates write, so prose that only
+# mentions the phrase, such as "No NEEDS CLARIFICATION remain", passes:
+# - the spec's inline marker, [NEEDS CLARIFICATION: question]
+# - the plan's Technical Context value, **Field**: NEEDS CLARIFICATION
 markers() {
-	if grep -Hn 'NEEDS CLARIFICATION' "$@"; then
+	if grep -HnE -e '\[NEEDS CLARIFICATION' \
+		-e '^\*\*[^*]+\*\*:.*NEEDS CLARIFICATION' "$@"; then
 		echo "unresolved clarifications" >&2
 		status=1
 	fi

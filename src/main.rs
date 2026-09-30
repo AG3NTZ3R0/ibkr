@@ -14,6 +14,7 @@ fn main() {
             exchange: None,
             start_time: None,
             outside_rth: None,
+            direction: None,
             source: None,
         })
         .expect("history request failed");

@@ -8,3 +8,4 @@ Cargo.lock
 # Spec Kit generated state
 /.specify/**/.cache/
 /.specify/.workflow-install.lock
+/.specify/workflows/runs/
