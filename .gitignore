@@ -4,3 +4,7 @@ Cargo.lock
 
 # OAuth key material — never commit
 *.pem
+
+# Spec Kit generated state
+/.specify/extensions/.cache/
+/.specify/.workflow-install.lock
