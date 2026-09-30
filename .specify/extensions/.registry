@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "extensions": {
+    "agent-context": {
+      "version": "1.0.2",
+      "source": "local",
+      "manifest_hash": "sha256:270100175bb742c37b8d549f2233c5b79114869dac754883dbecac2a4813beef",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.agent-context.update"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-09-30T02:44:32.597515+00:00"
+    },
+    "assess": {
+      "version": "1.0.1",
+      "source": "local",
+      "manifest_hash": "sha256:a1c87d9ce8088e7865f1d352137777a693b0595ccc310957c7c051a604ca1db2",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.assess.intake",
+          "speckit.assess.research",
+          "speckit.assess.define",
+          "speckit.assess.shape",
+          "speckit.assess.decide"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-09-30T02:44:32.613490+00:00"
+    },
+    "bug": {
+      "version": "1.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:1d0da5458f3c18ff08cf1602d88cecc33fad07068208951fb7128090cfa90c90",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.bug.assess",
+          "speckit.bug.fix",
+          "speckit.bug.test"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-09-30T02:44:32.626894+00:00"
+    },
+    "git": {
+      "version": "1.0.1",
+      "source": "local",
+      "manifest_hash": "sha256:698cc7089602db44622de39730555db4999cda94ab47195bcfe18f41d08b430a",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.git.feature",
+          "speckit.git.validate",
+          "speckit.git.remote",
+          "speckit.git.initialize",
+          "speckit.git.commit"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-09-30T02:44:32.656408+00:00"
+    },
+    "github": {
+      "version": "1.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:4645e3b053b7218e4f22066f0d2f625b1ca44c7838879a39a3977cfa2f3f12b3",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.github.taskstoissues"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-09-30T02:44:32.687280+00:00"
+    }
+  }
+}

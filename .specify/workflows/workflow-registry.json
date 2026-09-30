@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "workflows": {
+    "speckit": {
+      "name": "Full SDD Cycle",
+      "version": "1.0.1",
+      "description": "Runs specify \u2192 plan \u2192 tasks \u2192 implement with review gates",
+      "source": "bundled",
+      "installed_at": "2026-09-30T02:44:32.586695+00:00",
+      "updated_at": "2026-09-30T02:44:32.586700+00:00"
+    },
+    "assess": {
+      "name": "Idea Assessment Pipeline",
+      "version": "1.0.0",
+      "description": "Runs intake \u2192 research \u2192 define \u2192 shape \u2192 decide with a verdict review gate before a manual /speckit.specify handoff",
+      "source": "catalog",
+      "catalog_name": "default",
+      "url": "https://raw.githubusercontent.com/github/spec-kit/main/workflows/assess/workflow.yml",
+      "installed_at": "2026-09-30T02:44:35.484241+00:00",
+      "updated_at": "2026-09-30T02:44:35.484258+00:00"
+    },
+    "bugfix": {
+      "name": "Guided Bug Fix",
+      "version": "1.0.0",
+      "description": "Runs bug assess \u2192 human review gate \u2192 bug fix \u2192 bug test on a bug report",
+      "source": "catalog",
+      "catalog_name": "default",
+      "url": "https://raw.githubusercontent.com/github/spec-kit/main/workflows/bugfix/workflow.yml",
+      "installed_at": "2026-09-30T02:44:35.829683+00:00",
+      "updated_at": "2026-09-30T02:44:35.829691+00:00"
+    },
+    "guarded-sdd": {
+      "name": "Guarded SDD Cycle",
+      "version": "0.1.0",
+      "description": "Runs specify \u2192 plan \u2192 tasks \u2192 implement, stopping after any step that leaves work for a human",
+      "source": "/home/bjlacy/Development/agents/workflows/guarded-sdd",
+      "installed_at": "2026-09-30T02:44:35.992700+00:00",
+      "updated_at": "2026-09-30T02:44:35.992706+00:00"
+    }
+  }
+}
