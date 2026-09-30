@@ -6,5 +6,5 @@ Cargo.lock
 *.pem
 
 # Spec Kit generated state
-/.specify/extensions/.cache/
+/.specify/**/.cache/
 /.specify/.workflow-install.lock
