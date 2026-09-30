@@ -29,6 +29,11 @@ fn main() {
             symbol: SYMBOL.into(),
             name: Some(false),
             sec_type: Some(search::SecType::Stk),
+            more: None,
+            fund: None,
+            fund_family_conid_ex: None,
+            pattern: None,
+            referrer: None,
         }) {
             Ok(hits) => break hits,
             Err(ibkr::Error::Api { status: 503, .. }) if attempt < 5 => {

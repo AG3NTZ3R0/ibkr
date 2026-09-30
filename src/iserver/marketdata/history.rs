@@ -1,5 +1,5 @@
 //! `GET /iserver/marketdata/history` — historical market data for a contract.
-//! Docs: <https://www.interactivebrokers.com/docs/web-api/api-reference/trading-market-data/get-md-history>
+//! Docs: <https://www.interactivebrokers.com/docs/web-api/api-reference/trading/trading-market-data/get-md-history>
 
 use crate::Endpoint;
 use serde::Deserialize;
@@ -12,6 +12,7 @@ pub struct Request {
     pub exchange: Option<String>,
     pub start_time: Option<String>,
     pub outside_rth: Option<bool>,
+    pub direction: Option<Direction>,
     pub source: Option<Source>,
 }
 
@@ -57,9 +58,26 @@ impl BarSize {
     }
 }
 
+/// The reference contradicts itself on whether `Forward` requires `start_time`; neither rule
+/// is enforced here.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Direction {
+    Backward,
+    Forward,
+}
+
+impl Direction {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Direction::Backward => "-1",
+            Direction::Forward => "1",
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Source {
-    Trades,
+    Last,
     Midpoint,
     BidAsk,
 }
@@ -67,7 +85,7 @@ pub enum Source {
 impl Source {
     pub fn as_str(self) -> &'static str {
         match self {
-            Source::Trades => "Trades",
+            Source::Last => "Last",
             Source::Midpoint => "Midpoint",
             Source::BidAsk => "Bid_Ask",
         }
@@ -98,6 +116,9 @@ impl Endpoint for Request {
         }
         if let Some(outside_rth) = self.outside_rth {
             q.push(("outsideRth".to_string(), outside_rth.to_string()));
+        }
+        if let Some(direction) = self.direction {
+            q.push(("direction".to_string(), direction.as_str().to_string()));
         }
         if let Some(source) = self.source {
             q.push(("source".to_string(), source.as_str().to_string()));
@@ -162,30 +183,79 @@ pub struct Bar {
 mod tests {
     use super::*;
 
-    /// Official example response from the docs.
+    /// Official example response from the docs (`Last` source).
     const SAMPLE: &str = r#"{
-        "serverId":"20477","symbol":"AAPL","text":"APPLE INC","priceFactor":100,
-        "startTime":"20230818-08:00:00","high":"17510/472117.45/0","low":"17170/472117.45/0",
-        "timePeriod":"1d","barLength":86400,"mdAvailability":"S","mktDataDelay":0,"outsideRth":true,
-        "tradingDayDuration":1440,"volumeFactor":1,"priceDisplayRule":1,"priceDisplayValue":"2",
-        "chartPanStartTime":"20230821-13:30:00","direction":-1,"negativeCapable":false,
-        "messageVersion":2,
-        "data":[{"o":173.4,"c":174.7,"h":175.1,"l":171.7,"v":472117.45,"t":16923456000}],
-        "points":0,"travelTime":48
-    }"#;
+  "barLength": 86400,
+  "chartPanStartTime": "20250521-00:00:00",
+  "data": [
+    {
+      "c": 212.33,
+      "h": 213.94,
+      "l": 210.58,
+      "o": 212.43,
+      "t": 1747229400000,
+      "v": 266616.18
+    },
+    {
+      "c": 211.45,
+      "h": 212.96,
+      "l": 209.54,
+      "o": 210.95,
+      "t": 1747315800000,
+      "v": 256847.25
+    },
+    {
+      "c": 211.26,
+      "h": 212.57,
+      "l": 209.77,
+      "o": 212.36,
+      "t": 1747402200000,
+      "v": 235240.24
+    },
+    {
+      "c": 208.78,
+      "h": 209.48,
+      "l": 204.26,
+      "o": 207.78,
+      "t": 1747661400000,
+      "v": 267569.89
+    }
+  ],
+  "direction": -1,
+  "high": "21394/266616.18/1440",
+  "low": "20426/267569.89/8640",
+  "mdAvailability": "S",
+  "messageVersion": 2,
+  "mktDataDelay": 0,
+  "negativeCapable": false,
+  "outsideRth": false,
+  "points": 3,
+  "priceDisplayRule": 1,
+  "priceDisplayValue": "2",
+  "priceFactor": 100,
+  "serverId": "4155816",
+  "startTime": "20250513-13:30:00",
+  "symbol": "AAPL",
+  "text": "APPLE INC",
+  "timePeriod": "1w",
+  "travelTime": 7,
+  "volumeFactor": 100
+}"#;
 
     #[test]
     fn decodes_official_sample() {
         let resp: Response = serde_json::from_str(SAMPLE).expect("decode sample");
         assert_eq!(resp.symbol.as_deref(), Some("AAPL"));
         assert_eq!(resp.price_factor, Some(100));
-        assert_eq!(resp.high.as_deref(), Some("17510/472117.45/0"));
-        assert_eq!(resp.trading_day_duration, Some(1440));
-        assert_eq!(resp.data.len(), 1);
+        assert_eq!(resp.high.as_deref(), Some("21394/266616.18/1440"));
+        assert_eq!(resp.time_period.as_deref(), Some("1w"));
+        assert_eq!(resp.direction, Some(-1));
+        assert_eq!(resp.data.len(), 4);
         let bar = &resp.data[0];
-        assert_eq!(bar.o, 173.4);
-        assert_eq!(bar.t, 16923456000);
-        assert_eq!(resp.points, Some(0));
+        assert_eq!(bar.o, 212.43);
+        assert_eq!(bar.c, 212.33);
+        assert_eq!(bar.t, 1747229400000);
+        assert_eq!(resp.points, Some(3));
     }
 
     #[test]
@@ -206,15 +276,34 @@ mod tests {
             exchange: None,
             start_time: None,
             outside_rth: Some(true),
-            source: Some(Source::Midpoint),
+            direction: None,
+            source: Some(Source::Last),
         };
         let q = req.query();
         assert!(q.contains(&("conid".to_string(), "265598".to_string())));
         assert!(q.contains(&("bar".to_string(), "1d".to_string())));
         assert!(q.contains(&("period".to_string(), "1w".to_string())));
         assert!(q.contains(&("outsideRth".to_string(), "true".to_string())));
-        assert!(q.contains(&("source".to_string(), "Midpoint".to_string())));
+        assert!(q.contains(&("source".to_string(), "Last".to_string())));
         // unset optionals are absent
         assert!(!q.iter().any(|(k, _)| k == "exchange"));
+    }
+
+    #[test]
+    fn query_emits_direction_only_when_set() {
+        let req = |direction| Request {
+            conid: 265598,
+            bar: BarSize::Day1,
+            period: None,
+            exchange: None,
+            start_time: None,
+            outside_rth: None,
+            direction,
+            source: None,
+        };
+        let dir = |q: Vec<(String, String)>| q.into_iter().find(|(k, _)| k == "direction").map(|(_, v)| v);
+        assert_eq!(dir(req(Some(Direction::Forward)).query()).as_deref(), Some("1"));
+        assert_eq!(dir(req(Some(Direction::Backward)).query()).as_deref(), Some("-1"));
+        assert_eq!(dir(req(None).query()), None);
     }
 }

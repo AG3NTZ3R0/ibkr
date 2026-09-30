@@ -1,0 +1,23 @@
+{
+  "collission": false,
+  "hmds": {
+    "error": "no bridge"
+  },
+  "iserver": {
+    "authStatus": {
+      "MAC": "98:F2:B3:23:BF:A0",
+      "authenticated": true,
+      "competing": false,
+      "connected": true,
+      "established": true,
+      "message": "",
+      "serverInfo": {
+        "serverName": "JifN19053",
+        "serverVersion": "Build 10.25.0p, Dec 5, 2023 5:48:12 PM"
+      }
+    }
+  },
+  "session": "bb665d0f55b6289d70bc7380089fc96f",
+  "ssoExpires": 460311,
+  "userId": 123456789
+}

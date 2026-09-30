@@ -7,7 +7,8 @@
 //! than HMAC keyed by the token, and the token being minted here is the very thing `send` needs to
 //! sign anything. The phases share state (`a`, the decrypted secret), so they live together.
 //!
-//! Docs: <https://www.interactivebrokers.com/docs/web-api/authentication/oauth-1a/lst/compute-live-session-token>
+//! Docs: <https://www.interactivebrokers.com/docs/web-api/api-reference/authentication/oauth-1-0-a/req-live-session-token>
+//! Guide: <https://www.interactivebrokers.com/docs/web-api/authentication/oauth-1a/lst/compute-live-session-token>
 
 use num_bigint::BigUint;
 use reqwest::header::AUTHORIZATION;
@@ -88,4 +89,24 @@ pub fn mint(
         token: crypto::b64_encode(&lst),
         expiration: resp.live_session_token_expiration,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Official example response from the docs.
+    const SAMPLE: &str = r#"{
+  "live_session_token_signature": "712549e22ba937ab10bc8d571bd3a9c20c43d7cb",
+  "live_session_token_expiration": 1714669716258,
+  "diffie_hellman_response": "74d222b7c3c0916eb3c7e60ecec937cd4f531aab5ea5698ebd754feeb39a9d7fe04c2887b5e11d8a8e4176c2eee7ddd42016e57c7a98cfbb9a3282c5247f7d4a9b8f544a34fac4d6334065b55d6a2e73e390175cfb94e80281443e555030c576d1db409bf96870dab20581bc01cdf28489778f20c714e7ad39af60c476cf2207a119df3af82bbefcdad7749fa5b4ae6e93169ec14f66ff3220cf3156487ca33932284b0a09af14f05a75269ab243362ff4eabb2e2a57db0d7911ca549f24affa1f92f04908fd9a2349cefb0f9326aca65fc144847ab837fcbd1635b1aa84b4509198e349fad87c2caf6744cb94be2c5c1c7ef9f08c44e85ded45ebeefa248dc8"
+}"#;
+
+    #[test]
+    fn decodes_official_sample() {
+        let resp: Response = serde_json::from_str(SAMPLE).expect("decode sample");
+        assert!(resp.diffie_hellman_response.starts_with("74d222b7"));
+        assert_eq!(resp.live_session_token_signature, "712549e22ba937ab10bc8d571bd3a9c20c43d7cb");
+        assert_eq!(resp.live_session_token_expiration, 1714669716258);
+    }
 }

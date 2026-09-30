@@ -34,8 +34,8 @@
       "version": "0.1.0",
       "description": "Runs specify \u2192 plan \u2192 tasks \u2192 implement, stopping after any step that leaves work for a human",
       "source": "/home/bjlacy/Development/agents/workflows/guarded-sdd",
-      "installed_at": "2026-09-30T02:44:35.992700+00:00",
-      "updated_at": "2026-09-30T02:44:35.992706+00:00"
+      "installed_at": "2026-09-30T03:45:07.102690+00:00",
+      "updated_at": "2026-09-30T03:45:07.102697+00:00"
     }
   }
 }

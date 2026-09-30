@@ -1,0 +1,57 @@
+{
+  "barLength": 86400,
+  "chartPanStartTime": "20250521-00:00:00",
+  "data": [
+    {
+      "c": 212.42,
+      "h": 213.94,
+      "l": 210.59,
+      "o": 212.37,
+      "t": 1747229400000,
+      "v": 0
+    },
+    {
+      "c": 211.43,
+      "h": 212.97,
+      "l": 209.53,
+      "o": 210.98,
+      "t": 1747315800000,
+      "v": 0
+    },
+    {
+      "c": 211.19,
+      "h": 212.5,
+      "l": 209.77,
+      "o": 212.36,
+      "t": 1747402200000,
+      "v": 0
+    },
+    {
+      "c": 208.72,
+      "h": 209.48,
+      "l": 204.26,
+      "o": 207.94,
+      "t": 1747661400000,
+      "v": 0
+    }
+  ],
+  "direction": -1,
+  "high": "21394/0/1440",
+  "low": "20426/0/8640",
+  "mdAvailability": "S",
+  "messageVersion": 2,
+  "mktDataDelay": 0,
+  "negativeCapable": false,
+  "outsideRth": false,
+  "points": 3,
+  "priceDisplayRule": 1,
+  "priceDisplayValue": "2",
+  "priceFactor": 100,
+  "serverId": "4155818",
+  "startTime": "20250513-13:30:00",
+  "symbol": "AAPL",
+  "text": "APPLE INC",
+  "timePeriod": "1w",
+  "travelTime": 7,
+  "volumeFactor": 100
+}
